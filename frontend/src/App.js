@@ -53,6 +53,20 @@ function App() {
     }
   }
 
+  const [editImage, seteditimagefile] = useState({
+    editimageFileName:'Pilih Gambar...',
+    editImageFile:undefined,
+  });
+
+  const onEditImageFileChange=(event)=>{
+    var file=event.target.files[0]
+    if(file){
+      seteditimagefile({...editImage,editImageFileName:file.name,editImageFile:event.target.files[0]})
+    }else{
+      seteditimagefile({...editImage,editImageFileName:'Select Image...',editImageFile:undefined})
+    }
+  }
+
   useEffect(()=>{
     Axios.get(`${APIURL}users/user`)
     .then(res=>{
@@ -66,7 +80,6 @@ function App() {
   const addUser=()=>{
 
     var formdata=new FormData()
-
     const {nama, email}=addData
     const data={
       nama:nama.current.value,
@@ -93,14 +106,21 @@ function App() {
   
 
   const editUser=()=>{
-
+    var formdata=new FormData()
     const data={
       nama:datausersedit.nama,
       email:datausersedit.email
     }
+    var Headers={
+      headers: 
+      {
+        'Content-Type':'multipart/form-data',
+      }
+    }
 
-
-    Axios.put(`${APIURL}users/edituser/${datausersedit.id}`,data)
+    formdata.append('image', addImage.addImageFile)
+    formdata.append('data',JSON.stringify(data))
+    Axios.put(`${APIURL}users/edituser/${datausersedit.id}`,formdata,Headers)
     .then((res)=>{
       setdatauser(res.data.datauser)
       setModaledit(!modaledit)
@@ -131,7 +151,8 @@ function App() {
           <th scope="row">{index+1}</th>
           <td>{val.nama}</td>
           <td>{val.email}</td>
-          <td><img src={`${APIIMAGE+val.image}`}/></td>  
+          <td><img src={`${APIIMAGE+val.image}`} height='150px'/></td>
+
           <td>
             <Button onClick={()=>editoggle(index)} className='mr-2'>Edit</Button>
             <Button onClick={()=>deleteoggle(index)} >Delete</Button>
@@ -157,7 +178,8 @@ function App() {
 
     <Modal title='Edit User' toggle={toggleedit} modal={modaledit} actionfunc={editUser}  >
       <Input className='mb-2' type='text' placeholder="tulis nama user" value={datausersedit.nama} onChange={e=>setdatauseredit({...datausersedit, nama:e.target.value})}  />
-      <Input type='text' placeholder="tulis email" value={datausersedit.email} onChange={e=>setdatauseredit({...datausersedit, email:e.target.value})} />
+      <Input type='text' value={datausersedit.email} onChange={e=>setdatauseredit({...datausersedit, email:e.target.value})} />
+      <Input type='file' id='addImagePost' className='mt-2' onChange={onAddImageFileChange} />
     </Modal>
 
     <Modal title='Delete User' toggle={toggledelete} modal={modaldelete} actionfunc={deleteUser}  >

@@ -8,6 +8,8 @@ app.use(BodyParser.urlencoded({ extended: false }));
 app.use(BodyParser.json());
 app.use(cors())
 
+app.use(express.static('public'))
+
 const PORT = 5500
 
 app.get('/',(req,res)=>{

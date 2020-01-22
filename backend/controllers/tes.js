@@ -1,10 +1,9 @@
-try {
 
-    console.logsdf(asdfadf)
+    var dzaky={
+        nama:"insani",
+        umur:190
+    }
 
-} catch (err) {
-    throw err
-}
+    dzaky.pacar='nurani'
 
-
-console.log('sfgaga ')
+    console.log(dzaky)
